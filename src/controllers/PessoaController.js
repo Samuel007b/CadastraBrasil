@@ -23,7 +23,7 @@ export default class PessoaController {
         pessoa: pessoa.toJSON(),
       });
     } catch (erro) {
-      return res.status(500).json({ erro: erro.message || "Não foi possível cadastrar o cidadão." });
+      next(erro);
     }
   }
 
@@ -39,7 +39,7 @@ export default class PessoaController {
         pessoas: pessoas.map((pessoa) => pessoa.toJSON()),
       });
     } catch (erro) {
-      return res.status(500).json({ erro: erro.message || "Não foi possível executar a pesquisa." });
+      next(erro);
     }
   }
 
@@ -53,7 +53,7 @@ export default class PessoaController {
         pessoas: pessoas.map((pessoa) => pessoa.toJSON()),
       });
     } catch (erro) {
-      return res.status(500).json({ erro: erro.message || "Não foi possível listar os cidadãos cadastrados." });
+      next(erro);
     }
   }
 
@@ -71,7 +71,7 @@ export default class PessoaController {
       });
     }
     catch (erro) {
-      return res.status(500).json({ erro: erro.message || "Não foi possível editar o cidadão." });
+      next(erro);
     }
   }
 
@@ -82,7 +82,7 @@ export default class PessoaController {
       return res.status(204).end();
     }
     catch (erro) {
-      return res.status(500).json({ erro: erro.message || "Não foi possível deletar o cidadão." });
+      next(erro);
     }
   }
 
