@@ -5,6 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import Pessoa from '../models/Pessoa.js';
 import { NotFoundError } from '../errors/AppError.js';
+import CryptoUtils from "../utils/Crypto.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,7 +28,9 @@ export default class PessoaRepository {
     try {
       const conteudo = await fs.readFile(this.filePath, 'utf-8');
       const registros = JSON.parse(conteudo || '[]');
-      this.pessoas = registros.map((registro) => Pessoa.toObject(registro));
+      this.pessoas = registros.map((registro) =>
+        Pessoa.toObject({ ...registro, cpf: CryptoUtils.decrypt(registro.cpf) })
+      );
       const maiorId = this.pessoas.reduce((max, pessoa) => Math.max(max, pessoa.id), 0);
       Pessoa.sincCont(maiorId);
     } catch (erro) {
@@ -42,7 +45,10 @@ export default class PessoaRepository {
 
   async #continuar() {
     await fs.mkdir(path.dirname(this.filePath), { recursive: true });
-    const dados = this.pessoas.map((pessoa) => pessoa.toJSON());
+    const dados = this.pessoas.map((pessoa) => {
+      const registro = pessoa.toJSONCpfDigits();
+      return { ...registro, cpf: CryptoUtils.encrypt(registro.cpf) };
+    });
     await fs.writeFile(this.filePath, JSON.stringify(dados, null, 2), 'utf-8');
   }
 

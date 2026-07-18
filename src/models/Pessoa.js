@@ -25,6 +25,14 @@ export default class Pessoa {
     };
   }
 
+  toJSONCpfDigits() {
+    return {
+      id: this.id,
+      nome: this.nome,
+      cpf: this.cpf,
+    };
+  }
+
   getNome() {
     return this.nome;
   }
