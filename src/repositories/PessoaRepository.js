@@ -4,6 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Pessoa from '../models/Pessoa.js';
+import { NotFoundError } from '../errors/AppError.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -84,7 +85,7 @@ export default class PessoaRepository {
     await this.#pronto();
     const index = this.pessoas.findIndex((p) => p.id === pessoa.id);
     if (index === -1) {
-      throw new Error('Cidadão não encontrado.');
+      throw new NotFoundError('Cidadão não encontrado.');
     }
     this.pessoas[index] = pessoa;
     await this.#continuar();
@@ -95,7 +96,7 @@ export default class PessoaRepository {
     await this.#pronto();
     const index = this.pessoas.findIndex((p) => p.id === id);
     if (index === -1) {
-      throw new Error('Cidadão não encontrado.');
+      throw new NotFoundError('Cidadão não encontrado.');
     }
     this.pessoas.splice(index, 1);
     await this.#continuar();

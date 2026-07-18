@@ -2,6 +2,7 @@
 
 import Pessoa from '../models/Pessoa.js';
 import CpfValidator from '../utils/CpfValidator.js';
+import { ValidationError, ConflictError, NotFoundError } from '../errors/AppError.js';
 
 export default class PessoaService {
   
@@ -15,18 +16,18 @@ export default class PessoaService {
    */
   async cadastrar({ nome, cpf }) {
     if (!nome || !String(nome).trim()) {
-      throw new Error('O nome é obrigatório.');
+      throw new ValidationError('O nome é obrigatório.');
     }
     if (!cpf || !String(cpf).trim()) {
-      throw new Error('O CPF é obrigatório.');
+      throw new ValidationError('O CPF é obrigatório.');
     }
     if (!CpfValidator.validar(cpf)) {
-      throw new Error('CPF inválido. Verifique os dígitos informados.');
+      throw new ValidationError('CPF inválido. Verifique os dígitos informados.');
     }
     const digitos = CpfValidator.formatar(cpf);
     const cidadaoExistente = await this.pessoaRepository.findByCpf(digitos);
     if (cidadaoExistente) {
-      throw new Error('Já existe um cidadão cadastrado com este CPF.');
+      throw new ConflictError('Já existe um cidadão cadastrado com este CPF.');
     }
     const pessoa = new Pessoa(nome, cpf);
     await this.pessoaRepository.save(pessoa);
@@ -39,7 +40,7 @@ export default class PessoaService {
    */
   async pesquisar(termo) {
     if (!termo || !termo.trim()) {
-      throw new Error('Informe um nome ou CPF para pesquisar.');
+      throw new ValidationError('Informe um nome ou CPF para pesquisar.');
     }
     return this.pessoaRepository.search(termo.trim());
   }
@@ -50,23 +51,23 @@ export default class PessoaService {
 
   async editar(id, { nome, cpf }) {
     if (!nome || !String(nome).trim()) {
-      throw new Error('O nome é obrigatório.');
+      throw new ValidationError('O nome é obrigatório.');
     }
     if (!cpf || !String(cpf).trim()) {
-      throw new Error('O CPF é obrigatório.');
+      throw new ValidationError('O CPF é obrigatório.');
     }
     const pessoas = await this.pessoaRepository.findAll();
     const pessoa = pessoas.find((p) => p.id === parseInt(id));
     if (!pessoa) {
-      throw new Error('Cidadão não encontrado.');
+      throw new NotFoundError('Cidadão não encontrado.');
     }
     if (!CpfValidator.validar(cpf)) {
-      throw new Error('CPF inválido. Verifique os dígitos informados.');
+      throw new ValidationError('CPF inválido. Verifique os dígitos informados.');
     }
     const digitos = CpfValidator.formatar(cpf);
     const cidadaoExistente = await this.pessoaRepository.findByCpf(digitos);
     if (cidadaoExistente && cidadaoExistente.id !== pessoa.id) {
-      throw new Error('Já existe um cidadão cadastrado com este CPF.');
+      throw new ConflictError('Já existe um cidadão cadastrado com este CPF.');
     }
     pessoa.setNome(nome);
     pessoa.setCpf(cpf);
@@ -78,7 +79,7 @@ export default class PessoaService {
     const pessoas = await this.pessoaRepository.findAll();
     const pessoa = pessoas.find((p) => p.id === parseInt(id));
     if (!pessoa) {
-      throw new Error('Cidadão não encontrado.');
+      throw new NotFoundError('Cidadão não encontrado.');
     }
     await this.pessoaRepository.delete(pessoa.id);
   }
