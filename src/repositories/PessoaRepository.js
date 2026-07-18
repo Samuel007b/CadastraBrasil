@@ -15,6 +15,10 @@ export default class PessoaRepository {
     this.pessoas = [];
     this.carregado = false;
   }
+  
+  async inicializar() {
+    await this.#pronto();
+  }
 
   async #pronto() {
     if (this.carregado) return;
@@ -23,6 +27,8 @@ export default class PessoaRepository {
       const conteudo = await fs.readFile(this.filePath, 'utf-8');
       const registros = JSON.parse(conteudo || '[]');
       this.pessoas = registros.map((registro) => Pessoa.toObject(registro));
+      const maiorId = this.pessoas.reduce((max, pessoa) => Math.max(max, pessoa.id), 0);
+      Pessoa.sincCont(maiorId);
     } catch (erro) {
       if (erro.code === 'ENOENT') {
         await this.#continuar();
@@ -30,7 +36,6 @@ export default class PessoaRepository {
         throw erro;
       }
     }
-
     this.carregado = true;
   }
 
@@ -61,8 +66,7 @@ export default class PessoaRepository {
 
     return this.pessoas.filter((pessoa) => {
       const combinaPorCpf = termoDigitos.length > 0 && pessoa.cpf.includes(termoDigitos);
-      const combinaPorNome =
-        termoNome.length > 0 && pessoa.nomeCompleto.toLowerCase().includes(termoNome);
+      const combinaPorNome = termoNome.length > 0 && pessoa.nome.toLowerCase().includes(termoNome);
       return combinaPorCpf || combinaPorNome;
     });
   }
@@ -78,7 +82,7 @@ export default class PessoaRepository {
     await this.#pronto();
     const index = this.pessoas.findIndex((p) => p.id === pessoa.id);
     if (index === -1) {
-      throw new Error('Pessoa não encontrada para atualização.');
+      throw new Error('Cidadão não encontrado.');
     }
     this.pessoas[index] = pessoa;
     await this.#continuar();
@@ -89,7 +93,7 @@ export default class PessoaRepository {
     await this.#pronto();
     const index = this.pessoas.findIndex((p) => p.id === id);
     if (index === -1) {
-      throw new Error('Pessoa não encontrada para exclusão.');
+      throw new Error('Cidadão não encontrado.');
     }
     this.pessoas.splice(index, 1);
     await this.#continuar();

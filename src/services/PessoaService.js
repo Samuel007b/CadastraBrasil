@@ -9,11 +9,17 @@ export default class PessoaService {
   }
   
   /**
-   * @param {{ nomeCompleto: string, cpf: string }} dados
+   * @param {{ nome: string, cpf: string }} dados
    * @returns {Promise<Pessoa>}
    */
-  async cadastrar({ nomeCompleto, cpf }) {
-    const pessoa = new Pessoa(nomeCompleto, cpf);
+  async cadastrar({ nome, cpf }) {
+    if (!nome || !String(nome).trim()) {
+      throw new Error('O nome é obrigatório.');
+    }
+    if (!cpf || !String(cpf).trim()) {
+      throw new Error('O CPF é obrigatório.');
+    }
+    const pessoa = new Pessoa(nome, cpf);
     await this.pessoaRepository.save(pessoa);
     return pessoa;
   }
@@ -33,13 +39,13 @@ export default class PessoaService {
     return this.pessoaRepository.findAll();
   }
 
-  async editar(id, { nomeCompleto, cpf }) {
+  async editar(id, { nome, cpf }) {
     const pessoas = await this.pessoaRepository.findAll();
     const pessoa = pessoas.find((p) => p.id === parseInt(id));
     if (!pessoa) {
-      throw new Error('Pessoa não encontrada.');
+      throw new Error('Cidadão não encontrado.');
     }
-    pessoa.setNome(nomeCompleto);
+    pessoa.setNome(nome);
     pessoa.setCpf(cpf);
     await this.pessoaRepository.update(pessoa);
     return pessoa;
@@ -49,7 +55,7 @@ export default class PessoaService {
     const pessoas = await this.pessoaRepository.findAll();
     const pessoa = pessoas.find((p) => p.id === parseInt(id));
     if (!pessoa) {
-      throw new Error('Pessoa não encontrada.');
+      throw new Error('Cidadão não encontrado.');
     }
     await this.pessoaRepository.delete(pessoa.id);
   }

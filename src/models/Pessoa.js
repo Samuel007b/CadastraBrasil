@@ -3,30 +3,36 @@
 export default class Pessoa {
   static contId = 0;
 
-	constructor(nomeCompleto, cpf) {
+  static sincCont(id) {
+    if (id > Pessoa.contId) {
+      Pessoa.contId = id;
+    }
+  }
+
+	constructor(nome, cpf) {
     this.id = ++Pessoa.contId;
-    this.nomeCompleto = nomeCompleto;
+    this.nome = nome;
     this.cpf = cpf;
   }
 
 	toJSON() {
     return {
       id: this.id,
-      nomeCompleto: this.nomeCompleto,
+      nome: this.nome,
       cpf: this.cpf
     };
   }
 
   getNome() {
-    return this.nomeCompleto;
+    return this.nome;
   }
 
   getCpf() {
     return this.cpf;
   }
 
-  setNome(nomeCompleto) {
-    this.nomeCompleto = nomeCompleto;
+  setNome(nome) {
+    this.nome = nome;
   }
 
   setCpf(cpf) {
@@ -36,7 +42,7 @@ export default class Pessoa {
 	static toObject(obj) {
     const pessoa = Object.create(Pessoa.prototype);
     pessoa.id = obj.id;
-    pessoa.nomeCompleto = obj.nomeCompleto;
+    pessoa.nome = obj.nome;
     pessoa.cpf = obj.cpf;
     return pessoa;
   }

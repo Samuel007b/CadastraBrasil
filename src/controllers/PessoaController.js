@@ -13,14 +13,17 @@ export default class PessoaController {
 
   async cadastrar(req, res, next) {
     try {
-      const { nomeCompleto, cpf } = req.body;
-      const pessoa = await this.pessoaService.cadastrar({ nomeCompleto, cpf });
+      const { nome, cpf } = req.body;
+      if (!nome || !cpf) {
+        return res.status(400).json({ erro: 'Nome e CPF são obrigatórios.' });
+      }
+      const pessoa = await this.pessoaService.cadastrar({ nome, cpf });
       return res.status(201).json({
-        mensagem: 'Pessoa cadastrada com sucesso!',
+        mensagem: 'Cidadão cadastrado com sucesso!',
         pessoa: pessoa.toJSON(),
       });
     } catch (erro) {
-      return res.status(500).json({ erro: "Não foi possível cadastrar a pessoa." });
+      return res.status(500).json({ erro: erro.message || "Não foi possível cadastrar o cidadão." });
     }
   }
 
@@ -29,14 +32,14 @@ export default class PessoaController {
       const termo = req.query.termo || '';
       const pessoas = await this.pessoaService.pesquisar(termo);
       if (pessoas.length === 0) {
-        return res.status(404).json({ mensagem: 'Pessoa não encontrada.' });
+        return res.status(404).json({ mensagem: 'Cidadão não encontrado.' });
       }
       return res.status(200).json({
-        mensagem: 'Pessoa(s) encontrada(s) com sucesso!',
+        mensagem: 'Cidadão(s) encontrado(s) com sucesso!',
         pessoas: pessoas.map((pessoa) => pessoa.toJSON()),
       });
     } catch (erro) {
-      return res.status(500).json({ erro: "Não foi possível executar a pesquisa." });
+      return res.status(500).json({ erro: erro.message || "Não foi possível executar a pesquisa." });
     }
   }
 
@@ -44,28 +47,31 @@ export default class PessoaController {
     try {
       const pessoas = await this.pessoaService.listarTodos();
       if (pessoas.length === 0) {
-        return res.status(204).json({ mensagem: 'Nenhuma pessoa cadastrada.' });
+        return res.status(204).json({ mensagem: 'Nenhum cidadão cadastrado.' });
       }
       return res.status(200).json({
         pessoas: pessoas.map((pessoa) => pessoa.toJSON()),
       });
     } catch (erro) {
-      return res.status(500).json({ erro: "Não foi possível listar as pessoas cadastradas." });
+      return res.status(500).json({ erro: erro.message || "Não foi possível listar os cidadãos cadastrados." });
     }
   }
 
   async editar(req, res, next) {
     try {
       const { id } = req.params;
-      const { nomeCompleto, cpf } = req.body;
-      const pessoaAtualizada = await this.pessoaService.editar(id, { nomeCompleto, cpf });
+      const { nome, cpf } = req.body;
+      if (!nome || !cpf) {
+        return res.status(400).json({ erro: 'Nome e CPF são obrigatórios.' });
+      }
+      const pessoaAtualizada = await this.pessoaService.editar(id, { nome, cpf });
       return res.status(200).json({
-        mensagem: 'Pessoa atualizada com sucesso!',
+        mensagem: 'Cidadão atualizado com sucesso!',
         pessoa: pessoaAtualizada.toJSON(),
       });
     }
     catch (erro) {
-      return res.status(500).json({ erro: "Não foi possível editar a pessoa." });
+      return res.status(500).json({ erro: erro.message || "Não foi possível editar o cidadão." });
     }
   }
 
@@ -73,10 +79,10 @@ export default class PessoaController {
     try {
       const { id } = req.params;
       await this.pessoaService.deletar(id);
-      return res.status(204).json({ mensagem: 'Pessoa deletada com sucesso!' });
+      return res.status(204).json({ mensagem: 'Cidadão deletado com sucesso!' });
     }
     catch (erro) {
-      return res.status(500).json({ erro: "Não foi possível deletar a pessoa." });
+      return res.status(500).json({ erro: erro.message || "Não foi possível deletar o cidadão." });
     }
   }
 

@@ -13,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 const pessoaRepository = new PessoaRepository();
+await pessoaRepository.inicializar();
 const pessoaService = new PessoaService(pessoaRepository);
 const pessoaController = new PessoaController(pessoaService);
 
