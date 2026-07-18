@@ -1,6 +1,7 @@
 // Serviço para gerenciar operações da entidade Pessoa
 
 import Pessoa from '../models/Pessoa.js';
+import CpfValidator from '../utils/CpfValidator.js';
 
 export default class PessoaService {
   
@@ -18,6 +19,14 @@ export default class PessoaService {
     }
     if (!cpf || !String(cpf).trim()) {
       throw new Error('O CPF é obrigatório.');
+    }
+    if (!CpfValidator.validar(cpf)) {
+      throw new Error('CPF inválido. Verifique os dígitos informados.');
+    }
+    const digitos = CpfValidator.formatar(cpf);
+    const cidadaoExistente = await this.pessoaRepository.findByCpf(digitos);
+    if (cidadaoExistente) {
+      throw new Error('Já existe um cidadão cadastrado com este CPF.');
     }
     const pessoa = new Pessoa(nome, cpf);
     await this.pessoaRepository.save(pessoa);
@@ -40,10 +49,24 @@ export default class PessoaService {
   }
 
   async editar(id, { nome, cpf }) {
+    if (!nome || !String(nome).trim()) {
+      throw new Error('O nome é obrigatório.');
+    }
+    if (!cpf || !String(cpf).trim()) {
+      throw new Error('O CPF é obrigatório.');
+    }
     const pessoas = await this.pessoaRepository.findAll();
     const pessoa = pessoas.find((p) => p.id === parseInt(id));
     if (!pessoa) {
       throw new Error('Cidadão não encontrado.');
+    }
+    if (!CpfValidator.validar(cpf)) {
+      throw new Error('CPF inválido. Verifique os dígitos informados.');
+    }
+    const digitos = CpfValidator.formatar(cpf);
+    const cidadaoExistente = await this.pessoaRepository.findByCpf(digitos);
+    if (cidadaoExistente && cidadaoExistente.id !== pessoa.id) {
+      throw new Error('Já existe um cidadão cadastrado com este CPF.');
     }
     pessoa.setNome(nome);
     pessoa.setCpf(cpf);

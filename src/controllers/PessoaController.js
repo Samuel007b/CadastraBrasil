@@ -47,7 +47,7 @@ export default class PessoaController {
     try {
       const pessoas = await this.pessoaService.listarTodos();
       if (pessoas.length === 0) {
-        return res.status(204).json({ mensagem: 'Nenhum cidadão cadastrado.' });
+        return res.status(204).end();
       }
       return res.status(200).json({
         pessoas: pessoas.map((pessoa) => pessoa.toJSON()),
@@ -79,7 +79,7 @@ export default class PessoaController {
     try {
       const { id } = req.params;
       await this.pessoaService.deletar(id);
-      return res.status(204).json({ mensagem: 'Cidadão deletado com sucesso!' });
+      return res.status(204).end();
     }
     catch (erro) {
       return res.status(500).json({ erro: erro.message || "Não foi possível deletar o cidadão." });

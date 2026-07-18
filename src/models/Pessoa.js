@@ -1,5 +1,7 @@
 // Entidade Pessoa, representando um cidadão com nome completo e CPF
 
+import CpfValidator from '../utils/CpfValidator.js';
+
 export default class Pessoa {
   static contId = 0;
 
@@ -11,15 +13,15 @@ export default class Pessoa {
 
 	constructor(nome, cpf) {
     this.id = ++Pessoa.contId;
-    this.nome = nome;
-    this.cpf = cpf;
+    this.nome = String(nome).trim().replace(/\s+/g, ' ');
+    this.cpf = CpfValidator.formatar(String(cpf).trim());
   }
 
 	toJSON() {
     return {
       id: this.id,
       nome: this.nome,
-      cpf: this.cpf
+      cpf: CpfValidator.visualizar(this.cpf)
     };
   }
 
@@ -32,18 +34,18 @@ export default class Pessoa {
   }
 
   setNome(nome) {
-    this.nome = nome;
+    this.nome = String(nome).trim().replace(/\s+/g, ' ');
   }
 
   setCpf(cpf) {
-    this.cpf = cpf;
+    this.cpf = CpfValidator.formatar(String(cpf).trim());
   }
 
 	static toObject(obj) {
     const pessoa = Object.create(Pessoa.prototype);
     pessoa.id = obj.id;
-    pessoa.nome = obj.nome;
-    pessoa.cpf = obj.cpf;
+    pessoa.nome = String(obj.nome);
+    pessoa.cpf = CpfValidator.formatar(String(obj.cpf).trim());
     return pessoa;
   }
 

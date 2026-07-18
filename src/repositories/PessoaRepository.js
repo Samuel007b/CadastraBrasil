@@ -65,8 +65,10 @@ export default class PessoaRepository {
     const termoNome = termo.trim().toLowerCase();
 
     return this.pessoas.filter((pessoa) => {
-      const combinaPorCpf = termoDigitos.length > 0 && pessoa.cpf.includes(termoDigitos);
-      const combinaPorNome = termoNome.length > 0 && pessoa.nome.toLowerCase().includes(termoNome);
+      const cpf = String(pessoa.cpf);
+      const nome = String(pessoa.nome);
+      const combinaPorCpf = termoDigitos.length > 0 && cpf.includes(termoDigitos);
+      const combinaPorNome = termoNome.length > 0 && nome.toLowerCase().includes(termoNome);
       return combinaPorCpf || combinaPorNome;
     });
   }
