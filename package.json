@@ -1,0 +1,28 @@
+{
+  "name": "cadastrabrasil",
+  "version": "1.0.0",
+  "description": "Repositório de software para cadastro de pessoas com nome e CPF.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Samuel007b/CadastraBrasil.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Samuel007b/CadastraBrasil/issues"
+  },
+  "homepage": "https://github.com/Samuel007b/CadastraBrasil#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
