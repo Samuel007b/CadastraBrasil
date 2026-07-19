@@ -59,6 +59,72 @@
     </section>
 
   </main>
+
+  <div id="modal-visualizar" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-visualizar-titulo">
+      <button class="modal-close" type="button" data-close-modal aria-label="Fechar">&times;</button>
+      <h2 id="modal-visualizar-titulo">Dados do cidadão</h2>
+
+      <dl class="detalhe-lista">
+        <div class="detalhe-item">
+          <dt>ID</dt>
+          <dd id="detalhe-id"></dd>
+        </div>
+        <div class="detalhe-item">
+          <dt>Nome completo</dt>
+          <dd id="detalhe-nome"></dd>
+        </div>
+        <div class="detalhe-item">
+          <dt>CPF</dt>
+          <dd id="detalhe-cpf"></dd>
+        </div>
+      </dl>
+
+      <div class="modal-actions">
+        <button id="btn-excluir" class="btn btn-danger" type="button">Excluir</button>
+        <button id="btn-editar" class="btn btn-secondary" type="button">Editar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-formulario" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-formulario-titulo">
+      <button class="modal-close" type="button" data-close-modal aria-label="Fechar">&times;</button>
+      <h2 id="modal-formulario-titulo">Novo cidadão</h2>
+
+      <form id="form-cidadao" novalidate>
+        <input type="hidden" id="form-id" />
+
+        <label for="form-nome">Nome completo</label>
+        <input type="text" id="form-nome" name="nome" placeholder="Fulano de Tal" autocomplete="off" required />
+        <p class="campo-erro" id="erro-nome" hidden></p>
+
+        <label for="form-cpf">CPF</label>
+        <input type="text" id="form-cpf" name="cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" required />
+        <p class="campo-erro" id="erro-cpf" hidden></p>
+
+        <p class="form-erro-geral" id="erro-geral" hidden></p>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btn-salvar">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-confirmar" class="modal-overlay" hidden>
+    <div class="modal modal-small" role="dialog" aria-modal="true" aria-labelledby="modal-confirmar-titulo">
+      <button class="modal-close" type="button" data-close-modal aria-label="Fechar">&times;</button>
+      <h2 id="modal-confirmar-titulo">Excluir cidadão</h2>
+      <p id="modal-confirmar-texto">Tem certeza de que deseja excluir este cadastro? Essa ação não pode ser desfeita.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" data-close-modal>Cancelar</button>
+        <button type="button" class="btn btn-danger" id="btn-confirmar-exclusao">Sim, excluir</button>
+      </div>
+    </div>
+  </div>
+  
   <script src="script.js"></script>
 </body>
 </html>
