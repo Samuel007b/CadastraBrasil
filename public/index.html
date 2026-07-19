@@ -17,7 +17,48 @@
       <h1><span class="text-cadastra">Cadastra</span><span class="text-brasil">Brasil</span></h1>
     </div>
   </header>
-  <main></main>
+  <main class="page">
+
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+    <section class="toolbar">
+      <div class="search-group">
+        <div class="search-input-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+            <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input type="text" id="search-input" placeholder="Buscar por nome ou CPF..." autocomplete="off" />
+        </div>
+      </div>
+      <button id="btn-novo" class="btn btn-primary" type="button">
+        <span aria-hidden="true">+</span> Novo cidadão
+      </button>
+    </section>
+
+    <section class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th class="col-acao"><span class="sr-only">Ações</span></th>
+          </tr>
+        </thead>
+        <tbody id="tabela-corpo">
+        </tbody>
+      </table>
+
+      <div id="estado-vazio" class="estado-vazio" hidden>
+        <p id="estado-vazio-texto">Nenhum cidadão cadastrado ainda.</p>
+      </div>
+
+      <div id="estado-carregando" class="estado-vazio">
+        <p>Carregando cidadãos…</p>
+      </div>
+    </section>
+
+  </main>
   <script src="script.js"></script>
 </body>
 </html>
