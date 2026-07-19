@@ -115,6 +115,7 @@ async function buscarPessoas(termo) {
 }
 
 function renderizarTabela() {
+  estado.pessoas.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' }));
   const total = estado.pessoas.length;
   tabelaCorpo.innerHTML = '';
   if (total === 0) {

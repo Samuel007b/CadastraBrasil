@@ -94,6 +94,7 @@ html, body {
   height: 16px;
   color: #57534e;
   pointer-events: none;
+  z-index: 2;
 }
 
 .search-input-wrap input {
@@ -107,11 +108,9 @@ html, body {
   background: #ffffff;
 }
 
-.search-group select:focus, .search-input-wrap input:focus {
+.search-input-wrap input:focus {
   outline: 2px solid #1e7d3c;
   outline-offset: -1px;
-  z-index: 1;
-  position: relative;
 }
 
 .btn {
@@ -325,4 +324,12 @@ tbody tr:hover { background: #fbfaf7; }
   padding: 10px 12px;
   font-size: 0.85rem;
   margin: 16px 0 0;
+}
+
+@media (max-width: 640px) {
+  .topbar { padding: 16px 18px; }
+  .page { padding: 20px 18px 48px; }
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .search-group { max-width: none; }
+  thead th:nth-child(2), tbody td:nth-child(2) { display: none; }
 }
