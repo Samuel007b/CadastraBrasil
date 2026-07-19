@@ -36,6 +36,19 @@ function mascararCpf(cpf) {
   return `${partes[1]}.***.***-${partes[4]}`;
 }
 
+function formatandoCpf(valor) {
+  const digitos = valor.replace(/\D/g, '').slice(0, 11);
+  let final = digitos;
+  if (digitos.length > 9) {
+    final = digitos.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+  } else if (digitos.length > 6) {
+    final = digitos.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+  } else if (digitos.length > 3) {
+    final = digitos.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+  }
+  return final;
+}
+
 function exibirToast(mensagem, tipo = 'sucesso') {
   toast.textContent = mensagem;
   toast.className = `toast ${tipo}`;
@@ -124,12 +137,128 @@ function renderizarTabela() {
         <path d="M2 12C2 12 5.5 5 12 5C18.5 5 22 12 22 12C22 12 18.5 19 12 19C5.5 19 2 12 2 12Z" stroke="currentColor" stroke-width="1.8"/>
         <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/>
       </svg>`;
+      btnVer.addEventListener('click', () => abrirVisualizacao(pessoa.id));
       tdAcao.appendChild(btnVer);
       tr.appendChild(tdNome);
       tr.appendChild(tdCpf);
       tr.appendChild(tdAcao);
       tabelaCorpo.appendChild(tr);
     });
+  }
+}
+
+function abrirVisualizacao(id) {
+  const pessoa = estado.pessoas.find((p) => p.id === id);
+  if (!pessoa) return;
+  estado.idSelecionado = id;
+  detalheId.textContent = pessoa.id;
+  detalheNome.textContent = pessoa.nome;
+  detalheCpf.textContent = pessoa.cpf;
+  abrirModal(modalVisualizar);
+}
+
+function limparErrosFormulario() {
+  [erroNome, erroCpf, erroGeral].forEach((el) => { el.hidden = true; el.textContent = ''; });
+  formNome.classList.remove('campo-invalido');
+  formCpf.classList.remove('campo-invalido');
+}
+
+function abrirFormularioNovo() {
+  limparErrosFormulario();
+  formCidadao.reset();
+  formId.value = '';
+  modalFormularioTitulo.textContent = 'Novo cidadão';
+  abrirModal(modalFormulario);
+  formNome.focus();
+}
+
+function abrirFormularioEdicao() {
+  const pessoa = estado.pessoas.find((p) => p.id === estado.idSelecionado);
+  if (!pessoa) return;
+  limparErrosFormulario();
+  formId.value = pessoa.id;
+  formNome.value = pessoa.nome;
+  formCpf.value = pessoa.cpf;
+  modalFormularioTitulo.textContent = 'Editar cidadão';
+  fecharModal(modalVisualizar);
+  abrirModal(modalFormulario);
+  formNome.focus();
+}
+
+function validarFormularioLocal() {
+  limparErrosFormulario();
+  let valido = true;
+  if (!formNome.value.trim()) {
+    erroNome.textContent = 'O nome é obrigatório.';
+    erroNome.hidden = false;
+    formNome.classList.add('campo-invalido');
+    valido = false;
+  }
+  const digitosCpf = formCpf.value.replace(/\D/g, '');
+  if (digitosCpf.length !== 11) {
+    erroCpf.textContent = 'Informe um CPF completo (11 dígitos).';
+    erroCpf.hidden = false;
+    formCpf.classList.add('campo-invalido');
+    valido = false;
+  }
+  return valido;
+}
+
+async function salvarFormulario(evento) {
+  evento.preventDefault();
+  if (!validarFormularioLocal()) return;
+  const id = formId.value;
+  const corpo = { nome: formNome.value.trim(), cpf: formCpf.value };
+  const btnSalvar = document.getElementById('btn-salvar');
+  btnSalvar.disabled = true;
+  btnSalvar.textContent = 'Salvando...';
+  try {
+    const url = id ? `${API_BASE}/${id}` : API_BASE;
+    const metodo = id ? 'PUT' : 'POST';
+    const resposta = await fetch(url, {
+      method: metodo,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(corpo),
+    });
+    const dados = await resposta.json().catch(() => ({}));
+    if (!resposta.ok) {
+      erroGeral.textContent = dados.erro || 'Não foi possível salvar o cadastro.';
+      erroGeral.hidden = false;
+      return;
+    }
+    fecharModal(modalFormulario);
+    exibirToast(dados.mensagem || 'Cidadão salvo com sucesso!', 'sucesso');
+    await recarregarListaAtual();
+  } catch (erro) {
+    erroGeral.textContent = 'Erro de conexão com o servidor.';
+    erroGeral.hidden = false;
+  } finally {
+    btnSalvar.disabled = false;
+    btnSalvar.textContent = 'Salvar';
+  }
+}
+
+function abrirConfirmacaoExclusao() {
+  fecharModal(modalVisualizar);
+  abrirModal(modalConfirmar);
+}
+
+async function confirmarExclusao() {
+  if (!estado.idSelecionado) return;
+  btnConfirmarExclusao.disabled = true;
+  try {
+    const resposta = await fetch(`${API_BASE}/${estado.idSelecionado}`, { method: 'DELETE' });
+    if (!resposta.ok && resposta.status !== 204) {
+      const dados = await resposta.json().catch(() => ({}));
+      throw new Error(dados.erro || 'Não foi possível excluir o cidadão.');
+    }
+    fecharModal(modalConfirmar);
+    exibirToast('Cidadão excluído com sucesso!', 'sucesso');
+    await recarregarListaAtual();
+  } catch (erro) {
+    exibirToast(erro.message, 'erro');
+  } finally {
+    btnConfirmarExclusao.disabled = false;
   }
 }
 
@@ -156,6 +285,14 @@ function aoDigitarBusca() {
 }
 
 searchInput.addEventListener('input', aoDigitarBusca);
+btnNovo.addEventListener('click', abrirFormularioNovo);
+btnEditar.addEventListener('click', abrirFormularioEdicao);
+btnExcluir.addEventListener('click', abrirConfirmacaoExclusao);
+btnConfirmarExclusao.addEventListener('click', confirmarExclusao);
+formCidadao.addEventListener('submit', salvarFormulario);
+formCpf.addEventListener('input', () => {
+  formCpf.value = formatandoCpf(formCpf.value);
+});
 
 document.querySelectorAll('[data-close-modal]').forEach((el) => {
   el.addEventListener('click', () => {
