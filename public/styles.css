@@ -180,6 +180,27 @@ tbody td {
   font-size: 0.92rem;
 }
 
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: #fbfaf7; }
+
+.cpf-cell {
+  font-variant-numeric: tabular-nums;
+  color: #57534e;
+}
+
+.btn-ver {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #c9962c;
+  padding: 6px;
+  border-radius: 8px;
+  display: inline-flex;
+}
+
+.btn-ver:hover { background: #fbe9e7; }
+.btn-ver svg { width: 19px; height: 19px; }
+
 .modal-overlay {
   position: fixed;
   inset: 0;
