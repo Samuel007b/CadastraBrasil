@@ -1,0 +1,33 @@
+info:
+  name: Alterar cidadão sem CPF
+  type: http
+  seq: 12
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/pessoas/1"
+  body:
+    type: json
+    data: |-
+      {
+        "nome": "Felipe Moreira"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("deve retornar status 400", function() {
+          expect(res.getStatus()).to.equal(400);
+        });
+
+        test("deve retornar mensagem de erro", function() {
+          expect(res.getBody().erro).to.equal("Nome e CPF são obrigatórios.");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

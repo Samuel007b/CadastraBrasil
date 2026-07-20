@@ -1,0 +1,35 @@
+info:
+  name: Pesquisar cidadão(s) existente(s)
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/pessoas/pesquisa?termo=maria"
+  params:
+    - name: termo
+      value: maria
+      type: query
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("deve retornar status 200", function() {
+          expect(res.getStatus()).to.equal(200);
+        });
+
+        test("deve retornar mensagem de sucesso", function() {
+          expect(res.getBody().mensagem).to.equal("Cidadão(s) encontrado(s) com sucesso!");
+        });
+
+        test("deve retornar um array", function() {
+          expect(res.getBody().pessoas).to.be.an('array');
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

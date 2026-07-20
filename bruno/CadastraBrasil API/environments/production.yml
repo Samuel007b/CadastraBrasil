@@ -1,0 +1,4 @@
+name: production
+variables:
+  - name: baseUrl
+    value: https://cadastra-brasil.vercel.app

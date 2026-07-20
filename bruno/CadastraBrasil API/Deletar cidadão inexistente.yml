@@ -1,0 +1,27 @@
+info:
+  name: Deletar cidadão inexistente
+  type: http
+  seq: 8
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/api/pessoas/999"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("deve retornar status 404", function() {
+          expect(res.getStatus()).to.equal(404);
+        });
+
+        test("deve retornar mensagem de erro", function() {
+          expect(res.getBody().erro).to.equal("Cidadão não encontrado.");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,38 @@
+info:
+  name: Criar cidadão
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/pessoas"
+  body:
+    type: json
+    data: |-
+      {
+        "nome": "Maria Silva",
+        "cpf": "987.654.321-00"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("deve retornar status 201", function() {
+          expect(res.getStatus()).to.equal(201);
+        });
+
+        test("deve retornar mensagem de sucesso", function() {
+          expect(res.getBody().mensagem).to.equal("Cidadão cadastrado com sucesso!");
+        });
+
+        test("deve retornar cidadão criado", function() {
+          expect(res.getBody().pessoa);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

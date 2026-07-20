@@ -1,0 +1,38 @@
+info:
+  name: Alterar cidadão
+  type: http
+  seq: 3
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/pessoas/1"
+  body:
+    type: json
+    data: |-
+      {
+        "nome": "Maria Santos",
+        "cpf": "987.654.321-00"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("deve retornar status 200", function() {
+          expect(res.getStatus()).to.equal(200);
+        });
+
+        test("deve retornar mensagem de sucesso", function() {
+          expect(res.getBody().mensagem).to.equal("Cidadão atualizado com sucesso!");
+        });
+
+        test("deve retornar cidadão alterado", function() {
+          expect(res.getBody().pessoa);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
