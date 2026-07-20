@@ -32,7 +32,7 @@ export default class PessoaController {
       const termo = req.query.termo || '';
       const pessoas = await this.pessoaService.pesquisar(termo);
       if (pessoas.length === 0) {
-        return res.status(404).json({ mensagem: 'Cidadão não encontrado.' });
+        return res.status(404).json({ erro: 'Cidadão não encontrado.' });
       }
       return res.status(200).json({
         mensagem: 'Cidadão(s) encontrado(s) com sucesso!',
@@ -46,9 +46,6 @@ export default class PessoaController {
   async listar(req, res, next) {
     try {
       const pessoas = await this.pessoaService.listarTodos();
-      if (pessoas.length === 0) {
-        return res.status(204).end();
-      }
       return res.status(200).json({
         pessoas: pessoas.map((pessoa) => pessoa.toJSON()),
       });

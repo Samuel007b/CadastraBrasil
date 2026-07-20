@@ -38,9 +38,6 @@
       ]
     }
     ```
-
-    - **Erros:**
-      - `204` — Lista vazia (sem cidadãos registrados)
     
 
   ### GET /api/pessoas/pesquisa
