@@ -4,7 +4,7 @@ import request from 'supertest';
 import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
-import { criarApp } from '../index.js';
+import { criarApp } from '../src/app.js';
 import PessoaRepository from '../src/repositories/PessoaRepository.js';
 
 const CPF_VALIDO = '111.444.777-35';

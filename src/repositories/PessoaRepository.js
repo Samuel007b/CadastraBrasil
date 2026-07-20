@@ -10,9 +10,11 @@ import CryptoUtils from "../utils/Crypto.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const PATH = process.env.VERCEL ? path.join('/tmp', 'pessoas.json') : path.join(__dirname, '..', '..', 'data', 'pessoas.json');
+
 export default class PessoaRepository {
   
-  constructor(filePath = path.join(__dirname, '..', '..', 'data', 'pessoas.json')) {
+  constructor(filePath = PATH) {
     this.filePath = filePath;
     this.pessoas = [];
     this.carregado = false;
