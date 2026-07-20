@@ -65,9 +65,10 @@ describe('API /api/pessoas', () => {
     expect(resposta.body.pessoas).toHaveLength(1);
   });
 
-  test('GET /api/pessoas retorna 204 quando não há cidadãos cadastrados', async () => {
+  test('GET /api/pessoas retorna 200 quando não há cidadãos cadastrados', async () => {
     const resposta = await request(app).get('/api/pessoas');
-    expect(resposta.status).toBe(204);
+    expect(resposta.status).toBe(200);
+    expect(resposta.body.pessoas).toHaveLength(0);
   });
 
   test('GET /api/pessoas/pesquisa encontra cidadão cadastrado', async () => {
@@ -81,7 +82,7 @@ describe('API /api/pessoas', () => {
   test('GET /api/pessoas/pesquisa retorna 404 e mensagem quando não encontra', async () => {
     const resposta = await request(app).get('/api/pessoas/pesquisa').query({ termo: '999.999.999-99' });
     expect(resposta.status).toBe(404);
-    expect(resposta.body.mensagem).toBe('Cidadão não encontrado.');
+    expect(resposta.body.erro).toBe('Cidadão não encontrado.');
   });
 
   test('PUT /api/pessoas/:id atualiza um cidadão existente', async () => {
